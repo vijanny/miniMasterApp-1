@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -26,7 +27,6 @@ import com.bumptech.glide.Glide;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
-import com.chanven.lib.cptr.PtrClassicFrameLayout;
 import com.mastergroup.smartcook.App;
 import com.mastergroup.smartcook.Constant;
 import com.mastergroup.smartcook.R;
@@ -34,9 +34,12 @@ import com.mastergroup.smartcook.model.Recipes;
 import com.mastergroup.smartcook.module.menu.MenuListActivity;
 import com.mastergroup.smartcook.module.menu.MenuViewActivity;
 import com.mastergroup.smartcook.module.menu.SearchActivity;
+import com.mastergroup.smartcook.module.message.MessageActivity;
 import com.mastergroup.smartcook.util.ImageLoader;
 import com.mastergroup.smartcook.util.ToastUtils;
 import com.mastergroup.smartcook.util.Utils;
+
+import com.mastergroup.smartcook.view.VerticalSwipeRefreshLayout;
 import com.youth.banner.Banner;
 import com.youth.banner.listener.OnBannerClickListener;
 import com.yuyh.library.imgsel.utils.LogUtils;
@@ -56,7 +59,7 @@ import static com.mastergroup.smartcook.util.Utils.isLogin;
 
 /** 菜谱页面 */
 
-public class MenuFragment extends Fragment implements Contract.MenuView {
+public class MenuFragment extends Fragment implements Contract.MenuView,  SwipeRefreshLayout.OnRefreshListener{
 
     Contract.Presenter mPresenter;
 
@@ -73,8 +76,8 @@ public class MenuFragment extends Fragment implements Contract.MenuView {
     TextView moreTv;
     @Bind(R.id.progressBar)
     ProgressBar mProgressBar;
-    @Bind(R.id.ptr_fl)
-    PtrClassicFrameLayout ptrCFL;
+    @Bind(R.id.id_swipe_ly)
+    VerticalSwipeRefreshLayout refreshLayout;
 
     List<Recipes.RecipesBean> recipes_banner = new ArrayList<>();
     List<Recipes.RecipesBean> recipes_list = new ArrayList<>();
@@ -122,6 +125,7 @@ public class MenuFragment extends Fragment implements Contract.MenuView {
         setHasOptionsMenu(true);//需要额外调用
         this.view = view;
 
+        refreshLayout.setOnRefreshListener(this);
         initData();
         return view;
     }
@@ -133,20 +137,16 @@ public class MenuFragment extends Fragment implements Contract.MenuView {
     }
 
     void initData() {
-
-        ptrCFL.setEnabled(false);
-        mAdapter = new StaggeredMenuRVAdapter();
+        /** 瀑布流设置 */
         mRvMenu.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));   //RecyclerView 瀑布流布局
         //   mRvMenu.setLayoutManager(new GridLayoutManager(view.getContext(), 2)); //等宽布局
         //设置item之间的间隔
-        mRvMenu.setAdapter(mAdapter);
-        SpacesItemDecoration decoration=new SpacesItemDecoration(16);
+        SpacesItemDecoration decoration = new SpacesItemDecoration(6);
         mRvMenu.addItemDecoration(decoration);
         mRvMenu.setNestedScrollingEnabled(false);
         //设置Item增加、移除动画
         mStaggerGridLayoutManager = (StaggeredGridLayoutManager) mRvMenu.getLayoutManager();
         mRvMenu.setItemAnimator(new DefaultItemAnimator());
-
 
         mScrollView.setOnTouchListener(new View.OnTouchListener(){
             @Override
@@ -154,10 +154,10 @@ public class MenuFragment extends Fragment implements Contract.MenuView {
                 //判断 scrollView 当前滚动位置在顶部
                 if(mScrollView.getScrollY() == 0) {
                     LogUtils.d("mScrollView", "The scrollView is swipe  to top！");
-                    ptrCFL.setEnabled(true);
+                    // ptrCFL.setEnabled(true);
                     return false;
                 }
-                ptrCFL.setEnabled(false);
+                //    ptrCFL.setEnabled(false);
                 if(isCanLoading)//用更多数据加载
                     if(mScrollView.getChildAt(0).getHeight() - mScrollView.getHeight() == mScrollView.getScrollY() )  //滑动到底部
                         if(event.getAction() == MotionEvent.ACTION_UP) {
@@ -226,7 +226,13 @@ public class MenuFragment extends Fragment implements Contract.MenuView {
     @Override
     public void onGetRecipesSuccess(List<Recipes.RecipesBean> recipes_list) {
         this.recipes_list = recipes_list;
-        mAdapter.notifyDataSetChanged();
+        //mAdapter.notifyDataSetChanged();
+
+        //   ptrCFL.setEnabled(false);
+        mAdapter = new StaggeredMenuRVAdapter();
+
+        mRvMenu.setAdapter(mAdapter);
+        refreshLayout.setRefreshing(false);
 
     }
 
@@ -257,6 +263,8 @@ public class MenuFragment extends Fragment implements Contract.MenuView {
         mAdapter.notifyDataSetChanged();
 
         isLoading = false;
+
+
     }
 
     @Override
@@ -270,20 +278,32 @@ public class MenuFragment extends Fragment implements Contract.MenuView {
     @Override
     public void onGetBannerSuccess(List<Recipes.RecipesBean> banner_list) {
         this.recipes_banner = banner_list;
-        for (Recipes.RecipesBean s : recipes_banner) {
-            images.add(Constant.BASEURL + s.getDetail().getImgSrc());
+        if(!(images.size() == 5)) {
+            for (Recipes.RecipesBean s : recipes_banner) {
+                images.add(Constant.BASEURL + s.getDetail().getImgSrc());
+            }
         }
         setBanner();
     }
+
 
     @Override
     public void onGetBannerFailure(String info) {
         Log.d("banner", " info = " + info);
     }
 
+
     @Override
     public void setPresenter(Contract.Presenter presenter) {
         mPresenter = Utils.checkNotNull(presenter);
+    }
+
+
+    @Override
+    public void onRefresh() {
+        mPresenter.getRecipes(0, LOADER_RECIPES_COUNT);
+        mPresenter.getBanner();
+        isCanLoading = true;
     }
 
 
@@ -306,7 +326,7 @@ public class MenuFragment extends Fragment implements Contract.MenuView {
             if(position == 0) {
                 LogUtils.d("menuFragment", "设置第一张图片高度");
                 ViewGroup.LayoutParams params = holder.mIvMenuCover.getLayoutParams();
-                params.height = 800;
+                params.height = 700;
                 holder.mIvMenuCover.setLayoutParams(params);
             }
 
@@ -386,12 +406,16 @@ public class MenuFragment extends Fragment implements Contract.MenuView {
         mEdit.setTextColor(getActivity().getResources().getColor(R.color.white));
     }*/
 
-    @OnClick(R.id.search_rl)
+    @OnClick({R.id.search_rl, R.id.message_iv})
     public void OnClick(View view) {
         switch (view.getId()) {
 
             case R.id.search_rl:
                 startActivity(new Intent(getActivity(), SearchActivity.class));
+                break;
+
+            case R.id.message_iv:
+                startActivity(new Intent(getActivity(), MessageActivity.class));
                 break;
 
         }
@@ -479,9 +503,6 @@ public class MenuFragment extends Fragment implements Contract.MenuView {
             }
         }
     }
-
-
-
 
 
 }

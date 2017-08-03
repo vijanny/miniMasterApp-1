@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#eee"
+    tools:context="com.mastergroup.smartcook.module.message.MessageSettingActivity">
+
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="55dp"
+        android:background="@color/white"
+        android:orientation="horizontal"
+        android:id="@+id/relativeLayout"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true">
+
+
+        <ImageView
+            android:id="@+id/iv_return"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:padding="5dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="5dp"
+            android:src="@drawable/back" />
+
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="@string/user_message"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="16sp" />
+
+
+        <TextView
+            android:id="@+id/tv_more_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerInParent="true"
+            android:layout_marginRight="10dp"
+            android:padding="10dp"
+            android:text="@string/like"
+            android:textColor="@color/white"
+            android:visibility="gone"
+            android:textSize="15sp" />
+        <LinearLayout
+            android:layout_width="60dp"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            >
+
+
+
+        </LinearLayout>
+
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@color/gray"
+            android:layout_alignParentBottom="true"
+            ></View>
+    </RelativeLayout>
+
+
+    <RelativeLayout
+        android:id="@+id/comment_rl"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:gravity="center_vertical"
+        android:padding="12dp"
+        android:layout_below="@+id/relativeLayout"
+        android:layout_alignParentStart="true">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="17sp"
+            android:layout_toRightOf="@id/response_iv"
+            android:text="@string/comment"
+            android:textSize="16sp"
+            android:textColor="@color/gray_777"
+            />
+
+        <Switch
+            android:id="@+id/comment_sw"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="10dp"
+            android:thumb="@drawable/switch_thumb"
+            android:track="@drawable/switch_selector"
+
+            />
+
+    </RelativeLayout>
+
+
+    <RelativeLayout
+        android:id="@+id/response_rl"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:gravity="center_vertical"
+        android:padding="12dp"
+        android:layout_marginTop="1dp"
+        android:layout_below="@+id/comment_rl"
+        android:layout_alignParentStart="true">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="17sp"
+            android:layout_toRightOf="@id/response_iv"
+            android:text="@string/response"
+            android:textSize="16sp"
+            android:textColor="@color/gray_777"
+            />
+
+        <Switch
+            android:id="@+id/response_sw"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="10dp"
+            android:thumb="@drawable/switch_thumb"
+            android:track="@drawable/switch_selector"
+            />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/like_rl"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:gravity="center_vertical"
+        android:padding="12dp"
+
+        android:layout_marginTop="1dp"
+        android:layout_below="@+id/response_rl"
+        android:layout_alignParentStart="true">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="17sp"
+            android:layout_toRightOf="@id/response_iv"
+            android:text="@string/like"
+            android:textSize="16sp"
+            android:textColor="@color/gray_777"
+            />
+
+        <Switch
+            android:id="@+id/like_sw"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="10dp"
+            android:thumb="@drawable/switch_thumb"
+            android:track="@drawable/switch_selector"
+            />
+
+    </RelativeLayout>
+
+
+    <RelativeLayout
+        android:id="@+id/fans_rl"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:gravity="center_vertical"
+        android:padding="12dp"
+        android:layout_marginTop="1dp"
+        android:layout_below="@+id/like_rl"
+        android:layout_alignParentStart="true">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="17sp"
+            android:layout_toRightOf="@id/response_iv"
+            android:text="@string/new_fans"
+            android:textSize="16sp"
+            android:textColor="@color/gray_777"
+            />
+
+        <Switch
+            android:id="@+id/fans_sw"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="10dp"
+            android:thumb="@drawable/switch_thumb"
+            android:track="@drawable/switch_selector"
+            />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/system_message_rl"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:gravity="center_vertical"
+        android:padding="12dp"
+        android:layout_marginTop="1dp"
+        android:layout_below="@+id/fans_rl"
+        android:layout_alignParentStart="true">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="17sp"
+            android:layout_toRightOf="@id/response_iv"
+            android:text="@string/system_message"
+            android:textSize="16sp"
+            android:textColor="@color/gray_777"
+            />
+
+        <Switch
+            android:id="@+id/system_message_sw"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="10dp"
+            android:thumb="@drawable/switch_thumb"
+            android:track="@drawable/switch_selector"
+            />
+
+    </RelativeLayout>
+
+
+</RelativeLayout>
